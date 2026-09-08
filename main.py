@@ -20,6 +20,7 @@ def interpolacaoPolinominal(x, y):
 
     plt.title("Interpolação Polinominal - Polinômio de grau 8")
     plt.legend()
+    plt.ylim(-0.5, 1.5)
     plt.show()
 
 def minimosQuadrados(x, y):
@@ -35,14 +36,28 @@ def minimosQuadrados(x, y):
 
     plt.title("Mínimos Quadrados - Polinômio de grau 4")
     plt.legend()
+    plt.ylim(-0.5, 1.5)
     plt.show()
 
 def redesNeurais(x, y):
     mlp = Sequential()
-    mlp.add(Dense(1, input_shape=(1,), activation="tanh"))
+    mlp.add(Dense(5, input_shape=(1,), activation="tanh"))
     mlp.add(Dense(1))
 
-    print(mlp.summary())
+    mlp.compile(loss="mse", optimizer="adam", metrics=["mae"])
+
+    mlp.fit(x, y, epochs=10000)
+
+    x_grafico = np.arange(start=0, stop=12.1, step=0.1)
+    y_grafico = mlp.predict(x_grafico)
+
+    gerarGraficoValidacao(x, y)
+
+    plt.plot(x_grafico, y_grafico, color="blue", label="Função da Rede Neural")
+    
+    plt.title("Redes Neurais Artificiais - MLP (Multilayer Perceptron)")
+    plt.legend()
+    plt.show()
 
 def gerarGraficoValidacao(x_treinamento, y_treinamento):
     dfValidacao = pd.read_csv("Dados_validacao.csv")
@@ -51,13 +66,12 @@ def gerarGraficoValidacao(x_treinamento, y_treinamento):
     plt.plot(dfValidacao["Tempo"], dfValidacao["Saida_y"], color="green", label="Função correta")
 
     plt.xlabel("Tempo")
-    plt.ylim(-0.5, 1.5)
 
 # Execução dos métodos
 
 # Leitura do dataset com os dados de treinamento
 df = pd.read_csv("Dados_treinamento.csv")
 
-# interpolacaoPolinominal(df["Tempo"], df["Saida_y"])
-# minimosQuadrados(df["Tempo"], df["Saida_y"])
+interpolacaoPolinominal(df["Tempo"], df["Saida_y"])
+minimosQuadrados(df["Tempo"], df["Saida_y"])
 redesNeurais(df["Tempo"], df["Saida_y"])
