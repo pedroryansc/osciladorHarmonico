@@ -62,7 +62,7 @@ def redesNeurais(x, y):
 def gerarGraficoValidacao(x_treinamento, y_treinamento):
     dfValidacao = pd.read_csv("Dados_validacao.csv")
 
-    plt.scatter(x_treinamento, y_treinamento, color="red", label="Pontos originais")
+    plt.scatter(x_treinamento, y_treinamento, color="red", label="Pontos da função")
     plt.plot(dfValidacao["Tempo"], dfValidacao["Saida_y"], color="green", label="Função correta")
 
     plt.xlabel("Tempo")
