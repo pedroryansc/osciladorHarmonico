@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.interpolate import lagrange
 import numpy as np
+import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 
@@ -39,14 +40,22 @@ def minimosQuadrados(x, y):
     plt.ylim(-0.5, 1.5)
     plt.show()
 
+def mse_propria(y_previsto, y_real):
+    # Cálculo do MSE = sum((y_real - y_previsto) ** 2) / len(y_real)
+    mse = tf.reduce_mean(tf.square(y_real - y_previsto))
+
+    return mse
+
 def redesNeurais(x, y):
     mlp = Sequential()
     mlp.add(Dense(5, input_shape=(1,), activation="tanh"))
     mlp.add(Dense(1))
 
-    mlp.compile(loss="mse", optimizer="adam", metrics=["mae"])
+    # mlp.compile(loss="mse", optimizer="adam", metrics=["mae"])
+    mlp.compile(loss=mse_propria, optimizer="adam", metrics=["mae"])
 
-    mlp.fit(x, y, epochs=10000)
+    # mlp.fit(x, y, epochs=10000)
+    mlp.fit(x, y, epochs=1000)
 
     x_grafico = np.arange(start=0, stop=12.1, step=0.1)
     y_grafico = mlp.predict(x_grafico)
@@ -72,6 +81,6 @@ def gerarGraficoValidacao(x_treinamento, y_treinamento):
 # Leitura do dataset com os dados de treinamento
 df = pd.read_csv("Dados_treinamento.csv")
 
-interpolacaoPolinominal(df["Tempo"], df["Saida_y"])
-minimosQuadrados(df["Tempo"], df["Saida_y"])
+# interpolacaoPolinominal(df["Tempo"], df["Saida_y"])
+# minimosQuadrados(df["Tempo"], df["Saida_y"])
 redesNeurais(df["Tempo"], df["Saida_y"])

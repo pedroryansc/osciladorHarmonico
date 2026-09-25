@@ -1,11 +1,15 @@
+# Importando a biblioteca
 import tensorflow as tf
 
-x = tf.Variable(3.0)
+# Definindo o tensor (vetor x)
+x = tf.constant([1.0, 2.0, 3.0])
 
+# Abrindo o bloco do GradientTape e gravando a função y
 with tf.GradientTape() as tape:
-    y = x ** 2
+    tape.watch(x)
+    y = (x ** 2) + 3 * x # y = x² + 3x
 
-dy_dx = tape.gradient(y, x)
+# Calculando o gradiente (derivada) de y e aplicando os valores do vetor x
+gradiente = tape.gradient(y, x) # dy/dx = 2x + 3
 
-print(f"\nValor de y (x^2): {y.numpy():.2f}")
-print(f"O gradiente (derivada) de y = x^2 no ponto x = 3.0 é igual a {dy_dx.numpy():.2f}")
+print(gradiente)
